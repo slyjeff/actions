@@ -12,14 +12,14 @@ async function main(){
 }
 
 async function getCommits() {
-    // const owner = core.getInput('owner', { required: true });
-    // const repo = core.getInput('repo', { required: true });
-    // const pr_number = core.getInput('pr_number', { required: true });
-    // const token = core.getInput('token', { required: true });
-    const owner = 'slyjeff';
-    const repo = 'repotest';
-    const pr_number = 3;
-    const token = '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';
+    const owner = core.getInput('owner', { required: true });
+    const repo = core.getInput('repo', { required: true });
+    const pr_number = core.getInput('pr_number', { required: true });
+    const token = core.getInput('token', { required: true });
+    // const owner = 'slyjeff';
+    // const repo = 'repotest';
+    // const pr_number = 3;
+    // const token = '';
 
     const octokit = new github.getOctokit(token);
 
