@@ -17,7 +17,7 @@ inputs:
     description: 'The status to set the issue to in Linear'
     required: true
   linear_api_key:
-    description: 'API Key for accessing linea'
+    description: 'API Key for accessing Linear'
     required: true
 runs:
   using: 'node16'
