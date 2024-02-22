@@ -22,7 +22,7 @@ async function updateIssueStatus(issueId, status, linearClient){
     try {
         core.info("Updating status of " + issueId + " to " + status);
 
-        const issue = await linearClient.issue('pla-1');
+        const issue = await linearClient.issue(issueId);
         const team = await issue.team;
         const states = await team.states()
 
