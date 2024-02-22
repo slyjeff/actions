@@ -10,8 +10,14 @@ inputs:
   pr_number:
     description: 'The number of the pull request'
     required: true
-  token:
+  github_token:
     description: 'The token to use to access the GitHub API'
+    required: true
+  status:
+    description: 'The status to set the issue to in Linear'
+    required: true
+  linear_api_key:
+    description: 'API Key for accessing linea'
     required: true
 runs:
   using: 'node16'
