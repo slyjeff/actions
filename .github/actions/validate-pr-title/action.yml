@@ -62,7 +62,10 @@ runs:
             }
         }
         
-        if (!(IsValid {{ github.event.pull_request.title }})) {
+        $PrTitle = "${{ github.event.pull_request.title }}"
+        
+        Write-Host "Validating '$PrTitle'" 
+        if (!(IsValid $PrTitle)) {
             Write-Host "PR Title validation failed"
             exit 1  
         }
