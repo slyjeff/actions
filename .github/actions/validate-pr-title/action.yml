@@ -4,64 +4,73 @@ description: 'Validates that the PR conforms to semantic naming'
 runs:
   using: "composite"
   steps:
-    - name: validate PR title
+    - name: Validate PR Title
       shell: pwsh
       run: |
+        function ValidationError($message) {
+          $template = 'PR Title Templated: <type>(<scope>): <ticket number> <description>'
+          $docLink = 'https://www.notion.so/2d01e7766c0842dba3f656de78e0d0d7?v=fa0f5ae35e9c4f6a83d556b3dfd3df5d&p=8d5b812361ca4c2c9606f0b214987b36'
+      
+          Write-Error $message
+          Write-Information $docLink
+          Write-Information $template
+        }
+          
         function GetType([string]$value) {
-            $validTypes = 'feat', 'fix', 'docs', 'style', 'refactor', 'test', 'chore'
-            foreach ($type in $validTypes) {
-                if ($value.StartsWith($type)) {
-                   return $type
-                }
-            }
-          
-            Write-Host "PR Title must start with valid type: $validTypes"
-            return $null
+          $validTypes = 'feat', 'fix', 'docs', 'style', 'refactor', 'test', 'chore'
+          foreach ($type in $validTypes) {
+          if ($value.StartsWith($type)) {
+            return $type
+          }
         }
-        
+   
+        ValidationError "Must start with valid type ($validTypes)"
+          return $null
+        }
+          
         function RemoveScope([string] $value) {
-            if (!$value.StartsWith("(")) {
-                return $value
-            }
-            
-            $endingIndex = $value.IndexOf(")")
-            if (-1 -eq $endingIndex) {
-                return $value
-            }
-          
-            return $value.Substring($endingIndex + 1)
-        }
-        
-        function RemoveColon([string] $value) {
-            $value = $value.Substring(1)
-            if ($value.StartsWith(' ')) {
-                $value = $value.Substring(1)
-            }
-          
+          if (!$value.StartsWith("(")) {
             return $value
+          }
+          
+          $endingIndex = $value.IndexOf(")")
+          if (-1 -eq $endingIndex) {
+            return $value
+          }
+          
+          return $value.Substring($endingIndex + 1)
         }
-        
+          
+        function RemoveColon([string] $value) {
+          $value = $value.Substring(1)
+          if ($value.StartsWith(' ')) {
+            $value = $value.Substring(1)
+          }
+          
+          return $value
+        }
+          
         function IsValid ([string]$value) {
-            $type = GetType $value
-            if ($null -eq $type) {
-                return $false
-            }
+          $type = GetType $value
+          if ($null -eq $type) {
+            return $false
+          }
           
-            $value = $value.Substring($type.Length)
-            $value = RemoveScope $value
+          $value = $value.Substring($type.Length)
+          $value = RemoveScope $value
           
-            if (!$value.StartsWith(":")) {
-                Write-Host "PR Title must follow type (and optional scope) with ':'"
-                return $false
-            }
+          if (!$value.StartsWith(":")) {
+            ValidationError "':' must follow type (and optional scope)"
+            return $false
+          }
           
-            $value = RemoveColon $value
+          $value = RemoveColon $value
           
-            if (!($value -match '^[a-zA-Z]+-\d+ \S+')) {
-                Write-Host "Issue ID must follow type (and optional scope)"
-                return $false
-            }
-            return $true
+          if (!($value -match '^[a-zA-Z]+-\d+ \S+')) {
+            ValidationError "Linear Issue ID must follow type (and optional scope)"
+            return $false
+          }
+          return $true
         }
         
         $PrTitle = "${{ github.event.pull_request.title }}"
