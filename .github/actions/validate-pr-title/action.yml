@@ -67,7 +67,7 @@ runs:
           $value = RemoveColon $value
           
           if (!($value -match '^[a-zA-Z]+-\d+ \S+')) {
-            ValidationError "Linear Issue ID must follow type (and optional scope)"
+            ValidationError "Linear ticker number must follow type (and optional scope)"
             return $false
           }
           return $true
